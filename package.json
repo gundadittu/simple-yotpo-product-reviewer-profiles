@@ -1,0 +1,41 @@
+{
+  "name": "simple-yotpo-product-reviewer-profiles",
+  "version": "1.0.0",
+  "description": "Add simple profiles for your product reviewers from your on-site Yotpo widget ",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel ./src --out-dir dist",
+    "start": "node ./dist/index.js"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
+  },
+  "dependencies": {
+    "@babel/cli": "^7.13.16",
+    "@babel/core": "^7.13.16",
+    "@babel/preset-env": "^7.13.15",
+    "axios": "^0.21.1",
+    "babel-polyfill": "^6.26.0",
+    "babel-register": "^6.26.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.15.2",
+    "nodemon": "^2.0.7"
+  },
+  "devDependencies": {
+    "got": "^11.3.0",
+    "tape": "^4.7.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heroku/node-js-getting-started"
+  },
+  "keywords": [
+    "node",
+    "heroku",
+    "express"
+  ],
+  "author": "Aditya Gunda",
+  "license": "MIT"
+}
