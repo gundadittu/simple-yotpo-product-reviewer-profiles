@@ -1,8 +1,9 @@
 const express = require('express');
 const apiClient = require('./yotpoMerchantApiClient');
 const child_process = require('child_process');
-require("babel-register");
-require("babel-polyfill");
+const path = require('path');
+const cors = require('cors')
+require("regenerator-runtime/runtime");
 require("dotenv").config();
 const PORT = process.env.PORT || 5000;
 
@@ -10,6 +11,13 @@ const API_KEY = process.env.APP_KEY;
 const API_SECRET = process.env.SECRET_KEY;
 
 var app = express();
+
+app.set("views", path.join(__dirname, "views"));
+// app.use(express.static(path.join(__dirname, "views")));
+app.set("view engine", "ejs");
+app.engine('ejs', require('ejs').__express);
+
+app.use(cors());
 
 // TODO: add logging
 // TODO: handle heroku timeout/memory exceeded errors
@@ -19,7 +27,7 @@ var app = express();
 
 app.use('/', async function (_req, _res, next) {
     if (API_KEY == null || API_SECRET == null) {
-        let err = new Error("Missing API_KEY and/or API_SECRET"); // TODO: add env var values here
+        let err = new Error("Missing APP_KEY and/or SECRET_KEY"); // TODO: add env var values here
         next(err);
         return
     }
@@ -66,14 +74,8 @@ app.get('/reviewer-profile/:selectedReviewId', async function (req, res, next) {
         if (selectedReviewId == null) {
             throw new Error("Must provide selectedReviewId."); // TODO: include provided values
         }
-        const allReviews = await apiClient.fetchAllReviews(API_KEY, accessToken);
-        const selectedReview = allReviews.find(r => r["id"] == selectedReviewId);
-        if (selectedReview == null) {
-            throw new Error("Provided Review id was not found."); // TODO: include review id in output
-        }
-        const reviewerEmail = selectedReview["email"];
-        const relevantReviews = allReviews.filter(r => r["email"] == reviewerEmail);
-        res.status(200).send('<h1>'+relevantReviews+'</h1>');
+        const reviewerProfile = await apiClient.getReviewerProfileForReviewId(selectedReviewId, API_KEY, accessToken);
+        res.status(200).render('reviewerProfile', { firstName: reviewerProfile["reviewerName"] });
     } catch (e) {
         next(e);
     }
@@ -82,6 +84,7 @@ app.get('/reviewer-profile/:selectedReviewId', async function (req, res, next) {
 app.use(function (err, _req, res, _next) {
     // Log Error + send back generic message 
     // TODO: clean up return error message 
+    console.log(__dirname);
     res.status(500).send(err.message);
 });
 

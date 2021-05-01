@@ -1,10 +1,10 @@
 export const { fetchAllReviews, fetchAccessToken } = require('./dataFactory');
 
-export function getReviewerProfileForReviewId(selectedReviewId, apiKey, accessToken) { 
+export async function getReviewerProfileForReviewId(selectedReviewId, apiKey, accessToken) { 
     if (selectedReviewId == null || apiKey == null || accessToken == null) { 
         throw new Error("Must provide selectedReviewId, apiKey, and accessToken."); // TODO: include provided values
     }
-    const allReviews = await dataFactory.fetchAllReviews(apiKey, accessToken);
+    const allReviews = await fetchAllReviews(apiKey, accessToken);
     const selectedReview = allReviews.find(r => r["id"] == selectedReviewId);
     if (selectedReview == null) { 
         throw new Error("Provided Review id was not found."); // TODO: include review id in output
@@ -13,6 +13,7 @@ export function getReviewerProfileForReviewId(selectedReviewId, apiKey, accessTo
     const reviewerName = selectedReview["name"]
     // TODO: filter archived + deleted reviews
     const relevantReviews = allReviews.filter(r => r["email"] == reviewerEmail);
+
     // TODO: also include reviewer bio, stats, featured review =
     // calculate total # of reviews 
     // calculate average star rating
@@ -20,10 +21,12 @@ export function getReviewerProfileForReviewId(selectedReviewId, apiKey, accessTo
     //  get reviewer name + profile photo 
     // get product title + url + photo
     const profile = { 
-        name: reviewerName,
-        allReviews: relevantReviews,
+        reviewerName: reviewerName,
+        reviewerEmail: reviewerEmail,
+        selectedReview: selectedReview, 
+        allPostedReviews: relevantReviews,
     }
-    return relevantReviews; 
+    return profile; 
 }
 
 // {
