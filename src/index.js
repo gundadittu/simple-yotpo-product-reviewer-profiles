@@ -11,6 +11,12 @@ const API_SECRET = process.env.SECRET_KEY;
 
 var app = express();
 
+// TODO: add logging
+// TODO: handle heroku timeout/memory exceeded errors
+// TODO: handle heroku errors where free tier quota is exceeded 
+// - https://devcenter.heroku.com/articles/free-dyno-hours#determining-your-free-dyno-hours
+// TODO: yotpo handle rate limiting errors
+
 app.use('/', async function (_req, _res, next) {
     if (API_KEY == null || API_SECRET == null) {
         let err = new Error("Missing API_KEY and/or API_SECRET"); // TODO: add env var values here
@@ -67,7 +73,7 @@ app.get('/reviewer-profile/:selectedReviewId', async function (req, res, next) {
         }
         const reviewerEmail = selectedReview["email"];
         const relevantReviews = allReviews.filter(r => r["email"] == reviewerEmail);
-        res.status(200).send(relevantReviews);
+        res.status(200).send('<h1>'+relevantReviews+'</h1>');
     } catch (e) {
         next(e);
     }
@@ -75,6 +81,7 @@ app.get('/reviewer-profile/:selectedReviewId', async function (req, res, next) {
 
 app.use(function (err, _req, res, _next) {
     // Log Error + send back generic message 
+    // TODO: clean up return error message 
     res.status(500).send(err.message);
 });
 

@@ -29,6 +29,7 @@ export async function fetchAllReviews(
 ) { 
     const url = yotpoHelpers.constructRetrieveAllReviewsUrl(apiKey, accessToken, optionalSearchParams);
     const res = await axios.get(url); 
+    // TODO check types of all review objects https://stackoverflow.com/questions/20804163/check-if-a-key-exists-inside-a-json-object
     return res["data"]["reviews"];
 }
 // {
