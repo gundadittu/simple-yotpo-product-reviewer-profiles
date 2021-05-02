@@ -1,5 +1,15 @@
 export const { fetchAllReviews, fetchSpecificReview, fetchAccessToken } = require('./dataFactory');
 
+Date.prototype.mmddyyyy = function () {
+    var mm = this.getMonth() + 1; // getMonth() is zero-based
+    var dd = this.getDate();
+
+    return [(mm > 9 ? '' : '0') + mm,
+    (dd > 9 ? '' : '0') + dd,
+    this.getFullYear(),
+    ].join('/');
+};
+
 export async function getReviewerProfileForReviewId(selectedReviewId, apiKey, accessToken) {
     if (selectedReviewId == null || apiKey == null || accessToken == null) {
         throw new Error("Must provide selectedReviewId, apiKey, and accessToken."); // TODO: include provided values
@@ -31,7 +41,7 @@ export async function getReviewerProfileForReviewId(selectedReviewId, apiKey, ac
             const downvoteCount = currReview["votes_down"];
             const createdAt = currReview["created_at"];
             const createdAtMs = createdAt ? Date.parse(createdAt) : null;
-            const createdAtReadableString = createdAtMs ? new Date(createdAtMs).toString("MMM dd yy") : "";
+            const createdAtReadableString = createdAtMs ? new Date(createdAtMs).mmddyyyy() : "";
             const title = currReview["title"];
             const content = currReview["content"];
 
@@ -76,10 +86,10 @@ export async function getReviewerProfileForReviewId(selectedReviewId, apiKey, ac
                 productTitle: productTitle,
                 productUrl: productUrl
             });
-        } catch (e) { 
+        } catch (e) {
             // log error
-            console.log("getReviewerProfileForReviewId catch - "+e.message);
-            continue; 
+            console.log("getReviewerProfileForReviewId catch - " + e.message);
+            continue;
         }
     }
 

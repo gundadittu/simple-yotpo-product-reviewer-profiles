@@ -1,32 +1,39 @@
 <li>
     <div class="review-block">
-        <!-- <div class="review-product">
-            <div class="review-author-vcard">
-                <img src="https://secure.gravatar.com/avatar/214b1cc3f3b913b5e254f570c383a024?s=100&d=mm&r=g">
-                </img>
-            </div>
-        </div> -->
-        <div class="review-text">
+        <div class="review-content-block">
             <div>
-                <% const filledInStars = starRating; %>
-                <% const emptyStars = 5 - filledInStars; %>
-                <% for (var i=0; i < filledInStars; i++) {%>
-                    <span class="fa fa-star checked"></span>
-                <% } %>
-                <% for (var j=0; j < emptyStars; j++) {%>
-                    <span class="fa fa-star"></span>
-                <% } %>
+                <% const filledInStars=starRating; %>
+                    <% const emptyStars=5 - filledInStars; %>
+                        <% for (var i=0; i < filledInStars; i++) {%>
+                            <span class="fa fa-star checked"></span>
+                            <% } %>
+                                <% for (var j=0; j < emptyStars; j++) {%>
+                                    <span class="fa fa-star"></span>
+                                    <% } %>
             </div>
             <h2>
                 <%= title %>
             </h2>
-            <p>
+            <p class="gray-text">
                 <%= date %>
             </p>
             <p>
                 <%= content %>
             </p>
         </div>
+        <a href=<%=productUrl %>>
+            <div class="review-product-block">
+                <div class="review-product-image-wrap">
+                    <img src=<%=productImageUrl %>>
+                    </img>
+                </div>
+                <div class="review-product-title-wrap">
+                    <p>
+                        <%= productTitle %>
+                    </p>
+                </div>
+            </div>
+        </a>
     </div>
 </li>
 <!-- 
