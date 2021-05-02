@@ -4,15 +4,42 @@ img {
     height: auto;
 }
 
-.profile-block { 
-    max-width: 800px;
+
+.profile-bio-block { 
+    max-height: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    width: 100%;
+    margin: 15px;
 }
 
-.profile-title { 
-    font-size: 32px; 
-    position: relative;
-    padding-bottom: 2%;
+.profile-bio-image-wrap img { 
+    border-radius: 50px;
+    height: 100%;
 }
+
+.profile-bio-title { 
+    font-size: 32px;
+    margin-left: 15px;
+    /* padding-bottom: 2%; */
+}
+
+.profile-stats-block { 
+ width: 100%;
+ min-height: 45px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ border: solid 2px #eef2f5;
+}
+
+.profile-stats-item { 
+    width: 33%;
+    height: 100%;
+    display: block;
+    text-align: center;
+   }
 
 .checked { 
     color: orange;
@@ -49,30 +76,19 @@ img {
     padding: 0; 
 }
 
-/* .review-author { 
-    display: inline-block;
-    width: 8%;
-    position: relative;
-}
-.review-author-vcard { 
-    position: relative;
-    display: inline-block;
-    width: 100%;
-}
-
-.review-author-vcard img { 
-    border-radius: 50px;
-    width: 50px;
-    height: 50px;
-} */
-
 .review-product-block {
+    margin-top: 2%;
     max-height: 70px;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: left;
     border: solid 2px #eef2f5;
+}
+
+.review-product-block h2 { 
+    margin-block-start: 1%; 
+    margin-block-end: 1%;
 }
 
 /* .review-product-image-wrap { 

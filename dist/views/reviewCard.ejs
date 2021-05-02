@@ -20,6 +20,15 @@
             <p>
                 <%= content %>
             </p>
+            <% if (upvoteCount > 0) { %>    
+                <p class="gray-text">
+                    <% if (upvoteCount == 1) { %>
+                        One person found this helpful.
+                    <% } else { %>
+                        <%= upvoteCount %> people found this helpful.
+                    <% } %>
+                </p>
+            <% } %> 
         </div>
         <a href=<%=productUrl %>>
             <div class="review-product-block">
