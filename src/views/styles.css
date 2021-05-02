@@ -14,6 +14,10 @@ img {
     padding-bottom: 2%;
 }
 
+.checked { 
+    color: orange;
+}
+
 .review-list { 
     margin: 0;
     list-style-type: none;

@@ -98,7 +98,6 @@ export async function fetchSpecificReview(reviewId) {
     // TODO: add proper type checking
     const data = res["data"]["response"];
     const review = data["review"];
-    console.log(review);
     return review; 
 }
 // {

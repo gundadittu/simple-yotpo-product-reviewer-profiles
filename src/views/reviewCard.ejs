@@ -7,9 +7,16 @@
             </div>
         </div> -->
         <div class="review-text">
-            <p>
-                <%= starRating %>
-            </p>
+            <div>
+                <% const filledInStars = starRating; %>
+                <% const emptyStars = 5 - filledInStars; %>
+                <% for (var i=0; i < filledInStars; i++) {%>
+                    <span class="fa fa-star checked"></span>
+                <% } %>
+                <% for (var j=0; j < emptyStars; j++) {%>
+                    <span class="fa fa-star"></span>
+                <% } %>
+            </div>
             <h2>
                 <%= title %>
             </h2>
