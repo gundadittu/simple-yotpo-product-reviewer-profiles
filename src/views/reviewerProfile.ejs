@@ -8,14 +8,25 @@
 <body>
     <div class="profile-block">
         <h1 class="profile-title">
-            <%= firstName %>
+            <%= authorName %>
         </h1>
         <ol class="review-list">
-            <% allReviews.forEach(function(r){ %>
-                <%- include('reviewCard', {review: r}); %>
-                    <% }); %>
+            <% allPostedReviews.forEach(function(review){ %>
+                <%- include('reviewCard', review); %>
+             <% }); %>
         </ol>
     </div>
 </body>
 
 </html>
+
+<!-- 
+    profile object 
+    {
+ authorImageUrl: selectedAuthorImageUrl,
+ authorName: selectedAuthorName,
+ allPostedReviews: relevantReviews,
+ totalReviewCount: relevantReviewsCount,
+ totalUpvoteCount: allUpvotesCount,
+ avgStarRating: avgStarRating,
+ } -->

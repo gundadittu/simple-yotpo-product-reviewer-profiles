@@ -30,6 +30,7 @@ export async function fetchAllReviews(
     const url = yotpoHelpers.constructRetrieveAllReviewsUrl(apiKey, accessToken, optionalSearchParams);
     const res = await axios.get(url); 
     // TODO check types of all review objects https://stackoverflow.com/questions/20804163/check-if-a-key-exists-inside-a-json-object
+    // TODO: create  review object? 
     return res["data"]["reviews"];
 }
 // {
@@ -91,12 +92,15 @@ export async function fetchAllReviews(
 //     ]
 //   }
 
-// export async function fetchSpecificReview(reviewId) { 
-//     const url = 'https://api.yotpo.com/reviews/'+reviewId;
-//     const res = await axios.get(url); 
-//     const status = res["status"]["code"]; 
-//     const review = res["response"]["review"]; 
-// }
+export async function fetchSpecificReview(reviewId) { 
+    const url = 'https://api.yotpo.com/reviews/'+reviewId;
+    const res = await axios.get(url); 
+    // TODO: add proper type checking
+    const data = res["data"]["response"];
+    const review = data["review"];
+    console.log(review);
+    return review; 
+}
 // {
 //     "status":{
 //        "code":200,

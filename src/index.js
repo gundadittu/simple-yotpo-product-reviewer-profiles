@@ -70,15 +70,12 @@ app.get('/reviewer-profile/:selectedReviewId', async function (req, res, next) {
         const accessToken = process.env.ACCESS_TOKEN;
         const selectedReviewId = req.params.selectedReviewId;
         // TODO: check that accessToken and reviewId are not null
-        // const data = await apiClient.getReviewerProfileForReviewId(reviewId, API_KEY, accessToken, {}); 
         if (selectedReviewId == null) {
             throw new Error("Must provide selectedReviewId."); // TODO: include provided values
         }
         const reviewerProfile = await apiClient.getReviewerProfileForReviewId(selectedReviewId, API_KEY, accessToken);
-        res.status(200).render('reviewerProfile', { 
-            firstName: reviewerProfile["reviewerName"], 
-            allReviews: reviewerProfile["allPostedReviews"]
-         });
+        console.log(reviewerProfile);
+        res.status(200).render('reviewerProfile', reviewerProfile);  
     } catch (e) {
         next(e);
     }
