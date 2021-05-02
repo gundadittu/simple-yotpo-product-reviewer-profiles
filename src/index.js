@@ -13,7 +13,7 @@ const API_SECRET = process.env.SECRET_KEY;
 var app = express();
 
 app.set("views", path.join(__dirname, "views"));
-// app.use(express.static(path.join(__dirname, "views")));
+app.use(express.static(path.join(__dirname, "views")));
 app.set("view engine", "ejs");
 app.engine('ejs', require('ejs').__express);
 
@@ -75,7 +75,10 @@ app.get('/reviewer-profile/:selectedReviewId', async function (req, res, next) {
             throw new Error("Must provide selectedReviewId."); // TODO: include provided values
         }
         const reviewerProfile = await apiClient.getReviewerProfileForReviewId(selectedReviewId, API_KEY, accessToken);
-        res.status(200).render('reviewerProfile', { firstName: reviewerProfile["reviewerName"] });
+        res.status(200).render('reviewerProfile', { 
+            firstName: reviewerProfile["reviewerName"], 
+            allReviews: reviewerProfile["allPostedReviews"]
+         });
     } catch (e) {
         next(e);
     }
@@ -84,7 +87,6 @@ app.get('/reviewer-profile/:selectedReviewId', async function (req, res, next) {
 app.use(function (err, _req, res, _next) {
     // Log Error + send back generic message 
     // TODO: clean up return error message 
-    console.log(__dirname);
     res.status(500).send(err.message);
 });
 

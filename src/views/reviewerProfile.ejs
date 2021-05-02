@@ -1,2 +1,21 @@
 <!DOCTYPE html>
-<h1><%= firstName %></h1>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="/styles.css" type="text/css">
+</head>
+
+<body>
+    <div class="profile-block">
+        <h1 class="profile-title">
+            <%= firstName %>
+        </h1>
+        <ol class="review-list">
+            <% allReviews.forEach(function(r){ %>
+                <%- include('reviewCard', {review: r}); %>
+                    <% }); %>
+        </ol>
+    </div>
+</body>
+
+</html>

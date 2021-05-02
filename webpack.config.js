@@ -1,4 +1,19 @@
-var CopyWebpackPlugin = require('copy-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+// const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+// const HtmlWebpackPlugin = require('html-webpack-plugin')
+
+// const pages = ['reviewerProfile', 'reviewCard'];
+
+// const generateHtml = (pages) => {
+//     return pages.map((i) => {
+//         return new HtmlWebpackPlugin({
+//             chunks: [i],
+//             filename: `/views/${i}.ejs`,
+//             // template: path.join('src', 'views', 'template.ejs')
+//         })
+
+//     })
+// }
 
 module.exports = {
     entry: __dirname + "/src/index.js",
@@ -13,24 +28,34 @@ module.exports = {
 
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
-        extensions: [".webpack.js", ".web.js", "ejs", ".js"]
+        extensions: [".webpack.js", ".web.js", "ejs", ".js", ".css"]
     },
 
     module: {
         rules: [
             {
                 test: /\.(js)$/,
-                exclude: /node_modules/,
+                exclude: [/node_modules/],
                 use: {
                     loader: "babel-loader"
                 }
             },
             {
                 test: /\.ejs$/,
-                use: { 
+                use: {
                     loader: 'ejs-loader'
                 }
-            }
+            },
+            // {
+                // test: /\.(css)$/,
+                // use: [MiniCssExtractPlugin.loader, 'css-loader']
+                // use: {
+                //     loader: MiniCssExtractPlugin.loader,
+                //     options: {
+                //         publicPath: '/dist/views'
+                //     }
+                // }
+            // }
         ]
     },
     plugins: [
@@ -38,6 +63,11 @@ module.exports = {
             patterns: [
                 { from: 'src/views', to: 'views' }
             ]
-        })
+        }),
+        // ...generateHtml(pages),
+        // new MiniCssExtractPlugin({
+        //     filename:  'css/[contentHash].css',
+        //     chunkFilename: 'css/[contentHash].css'
+        // }),
     ]
 };
