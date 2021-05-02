@@ -64,8 +64,8 @@ app.use('/', async function (_req, _res, next) {
     }
 });
 
-app.get('/shopify-pop-up-widget', async function (req, res, next) {
-    res.status(200).render('shopifyEmbedding');
+app.get('/shopify-embedding', async function (req, res, next) {
+    res.status(200).render('shopifyEmbedding', {});
 });
 
 // TODO: add caching to response

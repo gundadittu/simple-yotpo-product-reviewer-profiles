@@ -1,25 +1,28 @@
 {
-    "name": "Simple Yotpo Product Reviewer Profiles",
-    "description": "",
-    "repository": "",
-    "logo": "",
-    "keywords": ["node", "express", "heroku"],
-    "image": "heroku/nodejs",
-     "formation": {
-      "web": {
-        "quantity": 1,
-        "size": "free"
-      }
+  "name": "Simple Yotpo Product Reviewer Profiles",
+  "description": "test-description",
+  "repository": "https://github.com/heroku/node-js-getting-started",
+  "logo": "https://cdn.rawgit.com/heroku/node-js-getting-started/main/public/node.svg",
+  "keywords": [
+    "node",
+    "express",
+    "heroku"
+  ],
+  "image": "heroku/nodejs",
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "free"
+    }
+  },
+  "env": {
+    "APP_KEY": {
+      "description": "Enter your Yotpo app key. More details on finding this are here: https://support.yotpo.com/en/article/finding-your-yotpo-app-key-and-api-secret",
+      "required": true
     },
-    "env": {
-      "APP_KEY": {
-        "description": "Enter your Yotpo app key. More details on finding this are here: https://support.yotpo.com/en/article/finding-your-yotpo-app-key-and-api-secret",
-        "required": true
-      },
-      "SECRET_KEY": {
-        "description": "Enter your Yotpo secret key. More details on finding this are here: https://support.yotpo.com/en/article/finding-your-yotpo-app-key-and-api-secret",
-        "required": true
-      }
+    "SECRET_KEY": {
+      "description": "Enter your Yotpo secret key. More details on finding this are here: https://support.yotpo.com/en/article/finding-your-yotpo-app-key-and-api-secret",
+      "required": true
     }
   }
-  
+}
