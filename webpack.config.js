@@ -61,7 +61,7 @@ module.exports = {
     plugins: [
         new CopyWebpackPlugin({
             patterns: [
-                { from: 'src/views', to: 'views' }
+                { from: 'src/assets', to: 'assets' }
             ]
         }),
         // ...generateHtml(pages),

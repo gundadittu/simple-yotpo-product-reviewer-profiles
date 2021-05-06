@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+
+<style type="text/css">
+    img {
+        max-width: 100%;
+        display: block;
+        height: auto;
+    }
+
+
+    .profile-bio-block {
+        max-height: 20%;
+        display: flex;
+        align-items: center;
+        justify-content: left;
+        width: 100%;
+        margin: 15px;
+    }
+
+    .profile-bio-image-wrap img {
+        border-radius: 50px;
+        height: 100%;
+    }
+
+    .profile-bio-title {
+        font-size: 32px;
+        margin-left: 15px;
+        /* padding-bottom: 2%; */
+    }
+
+    .profile-stats-block {
+        width: 100%;
+        min-height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: solid 2px #eef2f5;
+    }
+
+    .profile-stats-item {
+        width: 33%;
+        height: 100%;
+        display: block;
+        text-align: center;
+    }
+
+    .checked {
+        color: orange;
+    }
+
+    .gray-text {
+        color: #C0C0C0;
+    }
+
+    .review-list {
+        margin: 0;
+        list-style-type: none;
+        overflow-y: auto;
+        height: 100%;
+        width: 100%;
+    }
+
+    .review-list li:first-child {
+        border-top: solid 2px #eef2f5;
+    }
+
+    .review-list li {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+        margin: 0;
+        padding: 2% 0 6% 0;
+        list-style: none;
+        border-bottom: solid 2px #eef2f5;
+    }
+
+    .review-block {
+        position: relative;
+        padding: 0;
+    }
+
+    .review-product-block {
+        margin-top: 2%;
+        max-height: 70px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: left;
+        border: solid 2px #eef2f5;
+    }
+
+    .review-product-block h2 {
+        margin-block-start: 1%;
+        margin-block-end: 1%;
+    }
+
+    /* .review-product-image-wrap { 
+    display: inline-block;
+} */
+
+    .review-product-image-wrap img {
+        width: 65px;
+        height: 65px;
+        /* text-align: left;
+    vertical-align: middle; */
+    }
+
+    .review-product-title-wrap {
+        text-align: left;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .review-content-block {
+        font-size: 16px;
+        position: relative;
+        display: block;
+        width: 100%;
+        /* padding-left: 3%; */
+    }
+</style>
+<div class="profile-block">
+    <div class="profile-bio-block">
+        <div class="profile-bio-image-wrap">
+            <img src=<%=authorImageUrl %>></img>
+        </div>
+        <h1 class="profile-bio-title">
+            <%= authorName %>
+        </h1>
+    </div>
+    <div class="profile-stats-block">
+        <div class="profile-stats-item">
+            <h2>
+                <%= totalReviewCount %>
+            </h2>
+            <p>reviews</p>
+        </div>
+        <div class="profile-stats-item">
+            <h2>
+                <%= totalUpvoteCount %>
+            </h2>
+            <p>helpful votes</p>
+        </div>
+        <div class="profile-stats-item">
+            <h2>
+                <%= avgStarRating %>
+            </h2>
+            <p>avg rating</p>
+        </div>
+    </div>
+    <ol class="review-list">
+        <% allPostedReviews.forEach(function(review){ %>
+            <%- include('reviewCard', review); %>
+                <% }); %>
+    </ol>
+</div>
+
+<!-- 
+    profile object 
+    {
+ authorImageUrl: selectedAuthorImageUrl,
+ authorName: selectedAuthorName,
+ allPostedReviews: relevantReviews,
+ totalReviewCount: relevantReviewsCount,
+ totalUpvoteCount: allUpvotesCount,
+ avgStarRating: avgStarRating,
+ } -->

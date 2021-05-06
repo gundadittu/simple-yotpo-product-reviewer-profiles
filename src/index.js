@@ -2,7 +2,8 @@ const express = require('express');
 const apiClient = require('./yotpoMerchantApiClient');
 const child_process = require('child_process');
 const path = require('path');
-const cors = require('cors')
+const cors = require('cors');
+const fs = require('fs');
 require("regenerator-runtime/runtime");
 require("dotenv").config();
 const PORT = process.env.PORT || 5000;
@@ -12,8 +13,8 @@ const API_SECRET = process.env.SECRET_KEY;
 
 var app = express();
 
-app.set("views", path.join(__dirname, "views"));
-app.use(express.static(path.join(__dirname, "views")));
+app.set("views", path.join(__dirname, "assets/views"));
+app.use(express.static(path.join(__dirname, "assets")));
 app.set("view engine", "ejs");
 app.engine('ejs', require('ejs').__express);
 
@@ -64,8 +65,15 @@ app.use('/', async function (_req, _res, next) {
     }
 });
 
-app.get('/shopify-embedding', async function (req, res, next) {
-    res.status(200).render('shopifyEmbedding', {});
+app.get('/shopify-embedding-script', function (req, res, next) {
+    fs.readFile(__dirname+'/assets/scripts/shopifyEmbeddingScript.js', (err, data) => {
+        if (err) {
+            next(err);
+        } else {
+            res.type('.js')
+            res.status(200).send(data);
+        }
+    });
 });
 
 // TODO: add caching to response
@@ -79,7 +87,7 @@ app.get('/reviewer-profile/:selectedReviewId', async function (req, res, next) {
         }
         const reviewerProfile = await apiClient.getReviewerProfileForReviewId(selectedReviewId, API_KEY, accessToken);
         console.log(reviewerProfile);
-        res.status(200).render('reviewerProfile', reviewerProfile);  
+        res.status(200).render('reviewerProfile', reviewerProfile);
     } catch (e) {
         next(e);
     }
