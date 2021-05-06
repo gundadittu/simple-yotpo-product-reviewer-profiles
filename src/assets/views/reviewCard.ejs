@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <li>
     <div class="review-block">
         <div class="review-content-block">
@@ -11,24 +12,24 @@
                                     <span class="fa fa-star"></span>
                                     <% } %>
             </div>
-            <h2>
+            <h2 class="tiny-top-margin">
                 <%= title %>
             </h2>
-            <p class="gray-text">
+            <p class="gray-text tiny-top-margin smaller-text">
                 <%= date %>
             </p>
-            <p>
+            <p class="top-margin">
                 <%= content %>
             </p>
-            <% if (upvoteCount > 0) { %>    
+            <% if (upvoteCount> 0) { %>
                 <p class="gray-text">
-                    <% if (upvoteCount == 1) { %>
+                    <% if (upvoteCount==1) { %>
                         One person found this helpful.
-                    <% } else { %>
-                        <%= upvoteCount %> people found this helpful.
-                    <% } %>
+                        <% } else { %>
+                            <%= upvoteCount %> people found this helpful.
+                                <% } %>
                 </p>
-            <% } %> 
+                <% } %>
         </div>
         <a href=<%=productUrl %>>
             <div class="review-product-block">
