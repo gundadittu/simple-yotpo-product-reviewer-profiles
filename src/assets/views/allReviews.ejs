@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<style type="text/css">
+    img {
+        max-width: 100%;
+        display: block;
+        height: auto;
+    }
+
+    .no-spacing {
+        margin: 0;
+        padding: 0;
+        margin-block-start: 0;
+        margin-block-end: 0;
+        margin-inline-start: 0;
+        margin-inline-end: 0;
+    }
+
+    .tiny-top-margin {
+        margin: 5px 0 0 0;
+        padding: 0;
+        margin-block-start: 0;
+        margin-block-end: 0;
+    }
+
+    .top-margin {
+        margin: 15px 0 0 0;
+    }
+
+    .smaller-text {
+        font-size: 0.85rem;
+    }
+
+    .checked {
+        color: orange;
+    }
+
+    .gray-text {
+        color: #787878;
+    }
+
+    .review-list {
+        list-style-type: none;
+        overflow-y: auto;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+    }
+
+    .review-list ol {
+        list-style: none;
+        padding-inline-start: 0px;
+        margin-block-start: 0em;
+        margin-block-end: 0em;
+        margin-inline-start: 0px;
+        margin-inline-end: 0px;
+        width: 90%;
+    }
+
+    .review-list li:last-child {
+        border-bottom: 0;
+    }
+
+    .review-list li {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+        padding: 1%;
+        border-bottom: solid 2px #C0C0C0;
+    }
+
+    .review-block {
+        position: relative;
+        padding: 0;
+        margin: 5% 0 5% 0;
+    }
+
+    .review-content-block {
+        font-size: 16px;
+        position: relative;
+        display: block;
+        width: 100%;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<div>
+    <h2>Success!</h2>
+    <div class="review-list">
+        <ol>
+            <% allReviews.forEach(function(review){ %>
+                <li>
+                    <div class="review-block">
+                        <div class="review-content-block">
+                            <div>
+                                <% const filledInStars=review["score"]; %>
+                                <% const emptyStars=5 - filledInStars; %>
+                                <% for (var i=0; i < filledInStars; i++) {%>
+                                    <span class="fa fa-star checked"></span>
+                                <% } %>
+                                <% for (var j=0; j < emptyStars; j++) {%>
+                                    <span class="fa fa-star"></span>
+                                <% } %>
+                            </div>
+                            <h2 class="tiny-top-margin">
+                                <%= review["title"] %>
+                            </h2>
+                            <p class="gray-text tiny-top-margin smaller-text">
+                                <%= review["created_at"] %>
+                            </p>
+                            <p class="top-margin">
+                                <%= review["content"] %>
+                            </p>
+                            <% if (review["votes_up"] > 0) { %>
+                                <p class="gray-text">
+                                <% if (review["votes_up"] == 1) { %>
+                                    One person found this helpful.
+                                <% } else { %>
+                                    <%= review["votes_up"] %> people found this helpful.
+                                <% } %>
+                                </p>
+                            <% } %>
+                        </div>
+                    </div>
+                </li>
+            <% }); %>
+        </ol>
+    </div>
+</div>

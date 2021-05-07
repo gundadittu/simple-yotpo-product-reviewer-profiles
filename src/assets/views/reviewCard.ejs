@@ -3,14 +3,14 @@
     <div class="review-block">
         <div class="review-content-block">
             <div>
-                <% const filledInStars=starRating; %>
-                    <% const emptyStars=5 - filledInStars; %>
-                        <% for (var i=0; i < filledInStars; i++) {%>
-                            <span class="fa fa-star checked"></span>
-                            <% } %>
-                                <% for (var j=0; j < emptyStars; j++) {%>
-                                    <span class="fa fa-star"></span>
-                                    <% } %>
+                <% const filledInStars = starRating; %>
+                <% const emptyStars=5 - filledInStars; %>
+                <% for (var i=0; i < filledInStars; i++) {%>
+                    <span class="fa fa-star checked"></span>
+                <% } %>
+                <% for (var j=0; j < emptyStars; j++) {%>
+                    <span class="fa fa-star"></span>
+                <% } %>
             </div>
             <h2 class="tiny-top-margin">
                 <%= title %>
@@ -25,11 +25,11 @@
                 <p class="gray-text">
                     <% if (upvoteCount==1) { %>
                         One person found this helpful.
-                        <% } else { %>
-                            <%= upvoteCount %> people found this helpful.
-                                <% } %>
+                    <% } else { %>
+                        <%= upvoteCount %> people found this helpful.
+                    <% } %>
                 </p>
-                <% } %>
+            <% } %>
         </div>
         <a href=<%=productUrl %>>
             <div class="review-product-block">
@@ -46,16 +46,3 @@
         </a>
     </div>
 </li>
-<!-- 
-    review object
-{
-    title: title,
-    content: content,
-    upvoteCount: upvoteCount,
-    downvoteCount: downvoteCount,
-    starRating: starRating,
-    date: createdAtReadableString,
-    productImageUrl: productImageUrl, 
-    productTitle: productTitle, 
-    productUrl: productUrl
-} -->

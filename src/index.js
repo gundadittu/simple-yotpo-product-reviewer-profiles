@@ -1,13 +1,14 @@
 const express = require('express');
-const apiClient = require('./yotpoClient');
 const child_process = require('child_process');
 const path = require('path');
 const cors = require('cors');
 const fs = require('fs');
-var logger = require('npmlog');
-const { CallTracker } = require('assert');
+const logger = require('npmlog');
+const mcache = require('memory-cache');
 require("regenerator-runtime/runtime");
 require("dotenv").config();
+
+const yotpoClient = require('./yotpoClient');
 
 const PORT = process.env.PORT || 5000;
 
@@ -23,14 +24,10 @@ app.engine('ejs', require('ejs').__express);
 
 app.use(cors());
 
-// TODO: add logging
-// TODO: handle heroku timeout/memory exceeded errors
-// TODO: handle heroku errors where free tier quota is exceeded 
-// - https://devcenter.heroku.com/articles/free-dyno-hours#determining-your-free-dyno-hours
-// TODO: yotpo handle rate limiting errors
+// TODO: add comments (important info, customizations, data handling)
 
 app.use('/', async function (req, _res, next) {
-    logger.info('app.use(\'/\')', 'Recieved request.',
+    logger.info('app.use(\'/\')', 'Received request.',
         {
             hostName: req.hostname,
             body: req.body,
@@ -59,7 +56,7 @@ app.use('/', async function (req, _res, next) {
         // Create access token if invalid
         if (accessToken == null || accessTokenExpired) {
             logger.info('app.use(\'/\')', 'Refreshing access token.');
-            accessToken = await apiClient.fetchAccessToken(API_KEY, API_SECRET);
+            accessToken = await yotpoClient.fetchAccessToken(API_KEY, API_SECRET);
 
             logger.info('app.use(\'/\')', 'Successfully fetched refreshed accessToken.',
                 { accessToken: accessToken });
@@ -74,7 +71,7 @@ app.use('/', async function (req, _res, next) {
             const cmd2 = "heroku config:set ACCESS_TOKEN_CREATED_AT=" + accessTokenCreatedAt;
             child_process.exec(cmd2);
 
-            logger.info('Successfully set heroku config vars for ACCESS_TOKEN and ACCESS_TOKEN_CREATED_AT.',
+            logger.info('app.use(\'/\')', 'Successfully set heroku config vars for ACCESS_TOKEN and ACCESS_TOKEN_CREATED_AT.',
                 { accessToken: accessToken, accessTokenCreatedAt: accessTokenCreatedAt });
 
             // Save as regular env var for local testing
@@ -82,6 +79,19 @@ app.use('/', async function (req, _res, next) {
             process.env["ACCESS_TOKEN_CREATED_AT"] = accessTokenCreatedAt;
         }
         next();
+    } catch (e) {
+        next(e);
+    }
+});
+
+app.get('/', async function (_req, res, next) {
+    try {
+        logger.info('/', 'Checking server setup.');
+        const accessToken = process.env.ACCESS_TOKEN || null;
+        logger.info('/', 'Fetching all reviews.', { apiKeyIsNull: API_KEY == null, accessTokenIsNull: accessToken == null });
+        const allReviews = await yotpoClient.fetchAllReviews(API_KEY, accessToken);
+        logger.info('/', 'Successfully fetched all reviews.');
+        res.status(200).render('allReviews', { allReviews });
     } catch (e) {
         next(e);
     }
@@ -103,8 +113,42 @@ app.get('/shopify-embedding-script', function (_req, res, next) {
     });
 });
 
-// TODO: add caching to response
-app.get('/reviewer-profile/:selectedReviewId', async function (req, res, next) {
+const profileViewCache = (duration) => {
+    return (req, res, next) => {
+        let key = req.params.selectedReviewId || null;
+        if (key == null) { 
+            next();
+            return; 
+        }
+        logger.info('profileViewCache', 'Retrieved key.', { key });
+
+        let cachedBody = mcache.get(key);
+        
+        logger.info('profileViewCache', 'Retrieved cached body', { cachedBody });
+        
+        if (cachedBody) {
+            const { view, params } = cachedBody;
+            logger.info('profileViewCache', 'Retrieved view and params',  { view, params });
+            if (view && params) {
+                logger.info('profileViewCache', 'Sending back cached response.');
+                res.status(200).render(view, params);
+                return;
+            }
+        }
+
+        logger.info('profileViewCache', 'Cached body was missing. Exiting cache.');
+
+        res.renderResponse = res.render;
+        res.render = (view, params) => {
+            logger.info('profileViewCache', 'Caching and sending back profile response.', { view, params });
+            mcache.put(key, { view, params }, duration * 1000)
+            res.renderResponse(view, params);
+        };
+        next();
+    }
+}
+
+app.get('/reviewer-profile/:selectedReviewId', profileViewCache(60), async function (req, res, next) {
     try {
         const accessToken = process.env.ACCESS_TOKEN;
         const selectedReviewId = req.params.selectedReviewId;
@@ -115,10 +159,10 @@ app.get('/reviewer-profile/:selectedReviewId', async function (req, res, next) {
             throw new Error('Must provide selectedReviewId. (selectedReviewId: ${selectedReviewId})'); // TODO: include provided values
         }
 
-        logger.info('/reviewer-profile/:selectedReviewId', 'Calling Api Client to fetch review profile.');
+        logger.info('/reviewer-profile/:selectedReviewId', 'Calling Yotpo Client to fetch review profile.');
 
-        const reviewerProfile = await apiClient.getReviewerProfileForReviewId(selectedReviewId, API_KEY, accessToken);
-        
+        const reviewerProfile = await yotpoClient.getReviewerProfileForReviewId(selectedReviewId, API_KEY, accessToken);
+
         logger.info('/reviewer-profile/:selectedReviewId', 'Successfuly fetched reviewer profile. Returning rendered view.', reviewerProfile);
 
         res.status(200).render('reviewerProfile', reviewerProfile);
@@ -128,7 +172,6 @@ app.get('/reviewer-profile/:selectedReviewId', async function (req, res, next) {
 });
 
 app.use(function (err, _req, res, _next) {
-    // TODO: determine what error message to return
     logger.error("error-middleware", err);
     res.status(500).send(err);
 });

@@ -1,5 +1,15 @@
 <!DOCTYPE html>
 <style type="text/css">
+
+    .modal { 
+        opacity: 1 !important;
+        z-index: 21 !important;
+    }
+
+    .blocker { 
+        z-index: 20 !important; 
+    }
+
     img {
         max-width: 100%;
         display: block;
@@ -22,7 +32,7 @@
         margin-block-end: 0;
     }
 
-    .top-margin { 
+    .top-margin {
         margin: 15px 0 0 0;
     }
 
@@ -43,7 +53,7 @@
     }
 
     .profile-bio-image-wrap {
-       padding: 15px;
+        padding: 15px;
     }
 
     .profile-bio-image-wrap img {
@@ -135,13 +145,7 @@
         margin-block-end: 1%;
     }
 
-    /* .review-product-image-wrap {
-        padding: 1%;
-    } */
-
     .review-product-image-wrap img {
-        /* width: px; */
-        /* max-height: 80%; */
         width: 50px;
         margin: 10px;
     }
@@ -157,7 +161,6 @@
         position: relative;
         display: block;
         width: 100%;
-        /* padding-left: 3%; */
     }
 </style>
 <div class="profile-block">
@@ -195,7 +198,7 @@
         <ol>
             <% allPostedReviews.forEach(function(review){ %>
                 <%- include('reviewCard', review); %>
-                    <% }); %>
+            <% }); %>
         </ol>
     </div>
 </div>

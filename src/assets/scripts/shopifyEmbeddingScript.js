@@ -13,10 +13,9 @@ jqueryModalCssLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0
 head.append(jqueryScript, jqueryModalScript, jqueryModalCssLink);
 
 function attachProfileLinksToReviewHeader() {
-  console.log("entered attachProfileLinksToReviewHeader");
-
   const profileOverlayDiv = $("#reviewer-profile-overlay-view");
   const yotpoReviewsDivs = $("div.yotpo-review.yotpo-regular-box");
+  
   yotpoReviewsDivs.each(function (_, _) {
     const reviewId = $(this).attr("data-review-id");
     const requestUrl = profileOverlayDiv.attr("data-url") + '/reviewer-profile/' + reviewId;
@@ -35,8 +34,8 @@ function attachProfileLinksToReviewHeader() {
           profileOverlayDiv.empty();
           profileOverlayDiv.append(html);
         },
-        error: function (xhr, ajaxOptions, thrownError) {
-          console.log(xhr);
+        error: function (_xhr, _ajaxOptions, _thrownError) {
+          // TODO: report error? 
           profileOverlayDiv.empty();
           profileOverlayDiv.append("Something went wrong...");
         }
@@ -46,17 +45,14 @@ function attachProfileLinksToReviewHeader() {
   });
 }
 
-// Yotpo.isIE10OrLess && 10 != Yotpo.getIEVersion().major ||
-
+// TODO: test this, any IE browser stuff needed?
 function ready(e, attempt) {
-  console.log("entered ready - attempt "+attempt);
   if (attempt > 5) {
-    console.log("Attempt > 5. Skipping. Something went wrong.")
+    // TODO: report error here?
+    return
   } else if ("complete" === document.readyState) {
-    console.log("ready 1");
     e();
   } else {
-    console.log("ready 2");
     setTimeout(ready(e, ++attempt), 1000);
   }
 }

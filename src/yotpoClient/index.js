@@ -1,27 +1,23 @@
+const logger = require('npmlog');
 export const { fetchAllReviews, fetchSpecificReview, fetchAccessToken } = require('./dataFactory');
-
-Date.prototype.mmddyyyy = function () {
-    var mm = this.getMonth() + 1; // getMonth() is zero-based
-    var dd = this.getDate();
-
-    return [(mm > 9 ? '' : '0') + mm,
-    (dd > 9 ? '' : '0') + dd,
-    this.getFullYear(),
-    ].join('/');
-};
 
 export async function getReviewerProfileForReviewId(selectedReviewId, apiKey, accessToken) {
     if (selectedReviewId == null || apiKey == null || accessToken == null) {
         throw new Error("Must provide selectedReviewId, apiKey, and accessToken."); // TODO: include provided values
     }
 
+    logger.info('getReviewerProfileForReviewId', 'Calling fetchAllReviews');
     const allReviews = await fetchAllReviews(apiKey, accessToken);
+    logger.info('getReviewerProfileForReviewId', 'Successfully fetchedAllReviews.');
+
     const allReviewsCount = allReviews.length;
 
     const selectedReview = allReviews.find(r => r["id"] == selectedReviewId);
     if (selectedReview == null) {
-        throw new Error("Provided Review id was not found."); // TODO: include review id in output
+        throw new Error(`Provided Review id (${selectedReviewId}) was not found.`);
     }
+    logger.info('getReviewerProfileForReviewId', 'Found selectedReview.', { selectedReview: selectedReview });
+
     const selectedAuthorEmail = selectedReview["email"];
     const selectedAuthorName = selectedReview["name"];
     // TODO: replace default avatar image
@@ -52,12 +48,21 @@ export async function getReviewerProfileForReviewId(selectedReviewId, apiKey, ac
             if (authorEmail != selectedAuthorEmail ||
                 deletedStatus == true ||
                 archiveStatus == true ||
-                escalatedStatus == true) { // TODO: what is escalated?
+                escalatedStatus == true) {
+                logger.info('getReviewerProfileForReviewId', 'Skipping review.',
+                    {
+                        currReviewId: currReviewId,
+                        selectedAuthorEmail: selectedAuthorEmail,
+                        authorEmail: authorEmail,
+                    });
                 continue;
             }
 
+            logger.info('getReviewerProfileForReviewId', 'Fetching review details.', { currReviewId: currReviewId });
 
             const detailedReview = await fetchSpecificReview(currReviewId);
+
+            logger.info('getReviewerProfileForReviewId', 'Successfully fetched detailedReview.');
 
             const userInfo = detailedReview["user"];
             const userImageUrl = userInfo ? userInfo["social_image"] : null;
@@ -75,6 +80,8 @@ export async function getReviewerProfileForReviewId(selectedReviewId, apiKey, ac
             allStarRatingsCount += starRating;
             allUpvotesCount += upvoteCount;
 
+            logger.info('getReviewerProfileForReviewId', 'Adding item to relevant reviews.');
+
             relevantReviews.push({
                 title: title,
                 content: content,
@@ -87,8 +94,7 @@ export async function getReviewerProfileForReviewId(selectedReviewId, apiKey, ac
                 productUrl: productUrl
             });
         } catch (e) {
-            // log error
-            console.log("getReviewerProfileForReviewId catch - " + e.message);
+            logger.error('getReviewerProfileForReviewId', e);
             continue;
         }
     }
@@ -104,28 +110,17 @@ export async function getReviewerProfileForReviewId(selectedReviewId, apiKey, ac
         totalUpvoteCount: allUpvotesCount,
         avgStarRating: avgStarRating,
     };
+
+    logger.info('getReviewerProfileForReviewId', 'Returning profile object.');
     return profile;
 }
 
-// {
-//     "reviews": [
-//       {
-//         "id": 248989899,
-//         "title": "test review 1",
-//         "content": "test review",
-//         "score": 4,
-//         "votes_up": 0,
-//         "votes_down": 0,
-//         "created_at": "2021-04-22T02:18:31.000Z",
-//         "updated_at": "2021-04-22T02:53:35.000Z",
-//         "sentiment": 0.589802,
-//         "sku": "6640762945709",
-//         "name": "dittu",
-//         "email": "dittukg@gmail.com",
-//         "reviewer_type": "verified_reviewer",
-//         "deleted": false,
-//         "archived": false,
-//         "escalated": false
-//       },
-//     ]
-// }
+Date.prototype.mmddyyyy = function () {
+    var mm = this.getMonth() + 1;
+    var dd = this.getDate();
+
+    return [(mm > 9 ? '' : '0') + mm,
+    (dd > 9 ? '' : '0') + dd,
+    this.getFullYear(),
+    ].join('/');
+};
