@@ -1,4 +1,6 @@
-// https://apidocs.yotpo.com/reference#retrieve-all-reviews
+/* 
+* API docs: https://apidocs.yotpo.com/reference#retrieve-all-reviews
+*/
 export const constructRetrieveAllReviewsUrl = (
     api_key,
     access_token,

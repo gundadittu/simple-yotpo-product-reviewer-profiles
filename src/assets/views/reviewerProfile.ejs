@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <style type="text/css">
-
-    .modal { 
+    .modal {
         opacity: 1 !important;
         z-index: 21 !important;
     }
 
-    .blocker { 
-        z-index: 20 !important; 
+    .blocker {
+        z-index: 20 !important;
     }
 
     img {
@@ -45,25 +44,20 @@
     }
 
     .profile-bio-block {
-        max-height: 20%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        display: block;
         margin: 3%;
-    }
-
-    .profile-bio-image-wrap {
-        padding: 15px;
     }
 
     .profile-bio-image-wrap img {
         border-radius: 50px;
         height: 100%;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .profile-bio-title {
-        font-size: 32px;
-        margin-left: 1%;
+        font-size: 1.25rem;
+        text-align: center;
     }
 
     .profile-stats-block {
@@ -198,18 +192,7 @@
         <ol>
             <% allPostedReviews.forEach(function(review){ %>
                 <%- include('reviewCard', review); %>
-            <% }); %>
+                    <% }); %>
         </ol>
     </div>
 </div>
-
-<!-- 
-    profile object 
-    {
- authorImageUrl: selectedAuthorImageUrl,
- authorName: selectedAuthorName,
- allPostedReviews: relevantReviews,
- totalReviewCount: relevantReviewsCount,
- totalUpvoteCount: allUpvotesCount,
- avgStarRating: avgStarRating,
- } -->

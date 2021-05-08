@@ -1,9 +1,22 @@
 const logger = require('npmlog');
+
 export const { fetchAllReviews, fetchSpecificReview, fetchAccessToken } = require('./dataFactory');
 
+/* 
+* Takes review id and fetches all reviews posted by the same author. 
+* Returns a profile object. 
+*  {
+*       authorImageUrl: selectedAuthorImageUrl,
+*       authorName: selectedAuthorName,
+*       allPostedReviews: relevantReviews,
+*       totalReviewCount: relevantReviewsCount,
+*       totalUpvoteCount: allUpvotesCount,
+*       avgStarRating: avgStarRating,
+*   }
+*/
 export async function getReviewerProfileForReviewId(selectedReviewId, apiKey, accessToken) {
     if (selectedReviewId == null || apiKey == null || accessToken == null) {
-        throw new Error("Must provide selectedReviewId, apiKey, and accessToken."); // TODO: include provided values
+        throw new Error("Must provide selectedReviewId, apiKey, and accessToken.");
     }
 
     logger.info('getReviewerProfileForReviewId', 'Calling fetchAllReviews');
@@ -20,9 +33,8 @@ export async function getReviewerProfileForReviewId(selectedReviewId, apiKey, ac
 
     const selectedAuthorEmail = selectedReview["email"];
     const selectedAuthorName = selectedReview["name"];
-    // TODO: replace default avatar image
-    var selectedAuthorImageUrl = "https://secure.gravatar.com/avatar/214b1cc3f3b913b5e254f570c383a024?s=100&d=mm&r=g";
 
+    var selectedAuthorImageUrl;
     var relevantReviews = [];
     var allStarRatingsCount = 0;
     var allUpvotesCount = 0;

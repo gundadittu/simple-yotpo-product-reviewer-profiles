@@ -1,3 +1,8 @@
+/* 
+* This js script is inserted into a script tag on a shopify site. 
+* It downloads the necessary html and css to attach a popup profile to each Yotpo review.
+*/
+
 var head = document.getElementsByTagName("head")[0];
 
 var jqueryScript = document.createElement('script');
@@ -22,7 +27,7 @@ function attachProfileLinksToReviewHeader() {
     const yotpoReviewHeaderDiv = $(this).find("div.yotpo-header");
     yotpoReviewHeaderDiv.click(function () {
       profileOverlayDiv.empty();
-      profileOverlayDiv.append("Loading...");
+      profileOverlayDiv.append("<h1> Loading... </h1>");
       profileOverlayDiv.modal();
       $.ajax({
         url: requestUrl,
@@ -33,10 +38,10 @@ function attachProfileLinksToReviewHeader() {
           profileOverlayDiv.empty();
           profileOverlayDiv.append(html);
         },
-        error: function (_xhr, _ajaxOptions, _thrownError) {
-          // TODO: report error? 
+        error: function (xhr, _ajaxOptions, _thrownError) {
+          console.log('Error loading review profile: '+JSON.parse(xhr.responseText));
           profileOverlayDiv.empty();
-          profileOverlayDiv.append("Something went wrong...");
+          profileOverlayDiv.append("<h1> Something went wrong... </h1>");
         }
       });
     });
@@ -44,7 +49,6 @@ function attachProfileLinksToReviewHeader() {
   });
 }
 
-// TODO: test this
 function bindYotpoWidgetListener() {
   $('yotpo-nav-content').bind('DOMSubtreeModified', function () {
     attachProfileLinksToReviewHeader();
@@ -56,12 +60,11 @@ function setUp() {
   bindYotpoWidgetListener();
 }
 
-// TODO: test this, any IE browser stuff needed?
 function ready(e) {
   if ("complete" === document.readyState) {
     e();
   } else {
-    document.addEventListener("DOMContentLoaded", (event) => {
+    document.addEventListener("DOMContentLoaded", (_event) => {
       e();
     });
   }

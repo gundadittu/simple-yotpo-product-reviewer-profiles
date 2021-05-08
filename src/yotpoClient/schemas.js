@@ -1,3 +1,8 @@
+/*
+* This file holds the schemas of the expected response for the various 
+* Yotpo API calls in dataFactory.js
+*/
+
 export const fetchSpecificReviewDataSchema = {
     "type": "object",
     "properties": {

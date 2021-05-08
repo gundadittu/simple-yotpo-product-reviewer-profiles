@@ -1,10 +1,18 @@
 const axios = require('axios');
 const logger = require('npmlog');
-const yotpoHelpers = require('./helpers');
-const schemas = require('./schemas');
 const validator = new (require('jsonschema').Validator)();
 
-// API docs: https://apidocs.yotpo.com/reference#yotpo-authentication
+const yotpoHelpers = require('./helpers');
+const schemas = require('./schemas');
+const { setup } = require('axios-cache-adapter')
+
+const axiosCachedClient = setup({
+    maxAge: 60 * (60 * 1000) // cache for 60 minutes
+});
+
+/*
+* API docs: https://apidocs.yotpo.com/reference#yotpo-authentication
+*/
 export async function fetchAccessToken(
     apiKey,
     apiSecret,
@@ -28,7 +36,9 @@ export async function fetchAccessToken(
     return access_token;
 }
 
-// API docs: https://apidocs.yotpo.com/reference#retrieve-all-reviews
+/*
+* API docs: https://apidocs.yotpo.com/reference#retrieve-all-reviews
+*/
 export async function fetchAllReviews(
     apiKey,
     accessToken
@@ -39,7 +49,7 @@ export async function fetchAllReviews(
     const resultsPerPageCount = 100;
 
     const url = yotpoHelpers.constructRetrieveAllReviewsUrl(apiKey, accessToken, { page: page, count: resultsPerPageCount });
-    var res = await axios.get(url);
+    var res = await axiosCachedClient.get(url);
     logger.info('fetchAllReviews', 'Received response.', { page: page, count: resultsPerPageCount });
 
     const data = res["data"];
@@ -47,8 +57,7 @@ export async function fetchAllReviews(
 
     const reviews = data["reviews"];
     allReviews.push(...reviews);
-    
-    // TODO: test pagination
+
     const reviewsCount = reviews ? reviews.length : 0;
     var nextPageAvailable = (reviewsCount >= resultsPerPageCount);
     while (nextPageAvailable) {
@@ -73,7 +82,9 @@ export async function fetchAllReviews(
     return allReviews;
 }
 
-// API docs: https://apidocs.yotpo.com/reference#retrieve-a-review-by-review-id
+/*
+* API docs: https://apidocs.yotpo.com/reference#retrieve-a-review-by-review-id
+*/
 export async function fetchSpecificReview(reviewId) {
     const url = 'https://api.yotpo.com/reviews/' + reviewId;
     const res = await axios.get(url);

@@ -24,7 +24,17 @@ $ npm run start
 ```
 App should now be running on [localhost:5000](http://localhost:5000/).
 
-## Documentation
+# File structure 
+- webpack.config.js contains the necessary configurations to bundle this application for distribution
+- Procfile contains the instructions for Heroku to start this application once deployed
+- src/ contains the project's source code 
+- src/index.js is the entry point for the express server
+- src/yotpoClient contains all the necessary methods to interact with the Yotpo API
+- src/assets/views contains EJS (embedded javascript) for rendering the reviewer profiles
+- src/assets/scripts contains the scripts used to embed the profiles in a shopify website
+- app.json contains metadata about this application to display when deploying it
+
+## Heroku Documentation
 
 For more information about using Node.js on Heroku, see these Dev Center articles:
 
