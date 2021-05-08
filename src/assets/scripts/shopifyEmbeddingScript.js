@@ -15,7 +15,7 @@ head.append(jqueryScript, jqueryModalScript, jqueryModalCssLink);
 function attachProfileLinksToReviewHeader() {
   const profileOverlayDiv = $("#reviewer-profile-overlay-view");
   const yotpoReviewsDivs = $("div.yotpo-review.yotpo-regular-box");
-  
+
   yotpoReviewsDivs.each(function (_, _) {
     const reviewId = $(this).attr("data-review-id");
     const requestUrl = profileOverlayDiv.attr("data-url") + '/reviewer-profile/' + reviewId;
@@ -30,7 +30,6 @@ function attachProfileLinksToReviewHeader() {
         headers: { 'Access-Control-Allow-Origin': '*' },
         dataType: "html",
         success: function (html) {
-          console.log("entered attachProfileLinksToReviewHeader ajax-success")
           profileOverlayDiv.empty();
           profileOverlayDiv.append(html);
         },
@@ -45,18 +44,29 @@ function attachProfileLinksToReviewHeader() {
   });
 }
 
+// TODO: test this
+function bindYotpoWidgetListener() {
+  $('yotpo-nav-content').bind('DOMSubtreeModified', function () {
+    attachProfileLinksToReviewHeader();
+  });
+}
+
+function setUp() {
+  attachProfileLinksToReviewHeader();
+  bindYotpoWidgetListener();
+}
+
 // TODO: test this, any IE browser stuff needed?
-function ready(e, attempt) {
-  if (attempt > 5) {
-    // TODO: report error here?
-    return
-  } else if ("complete" === document.readyState) {
+function ready(e) {
+  if ("complete" === document.readyState) {
     e();
   } else {
-    setTimeout(ready(e, ++attempt), 1000);
+    document.addEventListener("DOMContentLoaded", (event) => {
+      e();
+    });
   }
 }
 
 setTimeout(function () {
-  ready(attachProfileLinksToReviewHeader, 0);
+  ready(setUp);
 }, 1500);
