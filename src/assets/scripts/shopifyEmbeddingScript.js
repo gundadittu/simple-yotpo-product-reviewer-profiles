@@ -39,7 +39,7 @@ function attachProfileLinksToReviewHeader() {
           profileOverlayDiv.append(html);
         },
         error: function (xhr, _ajaxOptions, _thrownError) {
-          console.log('Error loading review profile: '+JSON.parse(xhr.responseText));
+          console.log('Error loading review profile: ' + JSON.parse(xhr.responseText));
           profileOverlayDiv.empty();
           profileOverlayDiv.append("<h1> Something went wrong... </h1>");
         }
@@ -61,15 +61,27 @@ function setUp() {
 }
 
 function ready(e) {
-  if ("complete" === document.readyState) {
-    e();
+  if ("interactive" !== document.readyState) {
+    if ("complete" === document.readyState) {
+      setTimeout(function () {
+        e()
+      }, 1);
+    } else if (document.addEventListener) {
+      document.addEventListener("DOMContentLoaded", function () {
+        e();
+      }, !1);
+    } else {
+      document.attachEvent("onreadystatechange", function () {
+        if ("complete" === document.readyState) {
+          e();
+        }
+      });
+    }
   } else {
-    document.addEventListener("DOMContentLoaded", (_event) => {
-      e();
-    });
+    setTimeout(function () {
+      e()
+    }, 1)
   }
 }
 
-setTimeout(function () {
-  ready(setUp);
-}, 1500);
+ready(setUp);
