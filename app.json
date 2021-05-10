@@ -1,12 +1,12 @@
 {
   "name": "Simple Yotpo Product Reviewer Profiles",
-  "description": "test-description",
-  "repository": "https://github.com/heroku/node-js-getting-started",
+  "description": "Add profiles to your Yotpo product reviews widget",
+  "repository": "https://github.com/gundadittu/simple-yotpo-product-reviewer-profiles",
   "logo": "https://cdn.rawgit.com/heroku/node-js-getting-started/main/public/node.svg",
-  "keywords": [
-    "node",
-    "express",
-    "heroku"
+  "keywords": [ 
+    "yotpo", 
+    "reviews", 
+    "profiles"
   ],
   "image": "heroku/nodejs",
   "formation": {
