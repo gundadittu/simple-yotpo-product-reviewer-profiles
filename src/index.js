@@ -11,6 +11,7 @@ require("regenerator-runtime/runtime");
 require("dotenv").config();
 
 const yotpoClient = require('./yotpoClient');
+const viewModelFactory = require ('./viewModelFactory');
 
 const PORT = process.env.PORT || 5000;
 var app = express();
@@ -178,7 +179,7 @@ app.get('/reviewer-profile/:selectedReviewId', profileViewCache(60), async funct
 
         logger.info('/reviewer-profile/:selectedReviewId', 'Calling Yotpo Client to fetch review profile.');
 
-        const reviewerProfile = await yotpoClient.getReviewerProfileForReviewId(selectedReviewId, API_KEY, accessToken);
+        const reviewerProfile = await viewModelFactory.constructReviewProfileViewModel(selectedReviewId, API_KEY, accessToken);
 
         logger.info('/reviewer-profile/:selectedReviewId', 'Successfuly fetched reviewer profile. Returning rendered view.', reviewerProfile);
 

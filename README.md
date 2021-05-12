@@ -1,4 +1,4 @@
-# Yotpo UGC API Service
+# Simple Yotpo Reviewer Profiles
 
 ## Deploying to Heroku
 
@@ -30,6 +30,7 @@ App should now be running on [localhost:5000](http://localhost:5000/).
 - src/ contains the project's source code 
 - src/index.js is the entry point for the express server
 - src/yotpoClient contains all the necessary methods to interact with the Yotpo API
+- src/viewModelFactory contains all the necessary methods to construct models for the views at src/assets/views
 - src/assets/views contains EJS (embedded javascript) for rendering the reviewer profiles
 - src/assets/scripts contains the scripts used to embed the profiles in a shopify website
 - app.json contains metadata about this application to display when deploying it
@@ -42,4 +43,3 @@ For more information about using Node.js on Heroku, see these Dev Center article
 - [Heroku Node.js Support](https://devcenter.heroku.com/articles/nodejs-support)
 - [Node.js on Heroku](https://devcenter.heroku.com/categories/nodejs)
 - [Best Practices for Node.js Development](https://devcenter.heroku.com/articles/node-best-practices)
-- [Using WebSockets on Heroku with Node.js](https://devcenter.heroku.com/articles/node-websockets)
