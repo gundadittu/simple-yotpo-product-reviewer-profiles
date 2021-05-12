@@ -1,18 +1,21 @@
-const express = require('express');
-
+// Node modules
 const path = require('path');
 const fs = require('fs');
 const child_process = require('child_process');
 
+// External modules
+const express = require('express');
 const logger = require('npmlog');
 const mcache = require('memory-cache');
 const cors = require('cors');
 require("regenerator-runtime/runtime");
 require("dotenv").config();
 
+// Internal modules
 const yotpoClient = require('./yotpoClient');
-const viewModelFactory = require ('./viewModelFactory');
+const viewModelFactory = require('./viewModelFactory');
 
+// Express app setup
 const PORT = process.env.PORT || 5000;
 var app = express();
 
@@ -22,8 +25,10 @@ app.use(express.static(path.join(__dirname, "assets")));
 app.set("view engine", "ejs");
 app.engine('ejs', require('ejs').__express);
 
+// Cross origin support
 app.use(cors());
 
+// Env variables
 const API_KEY = process.env.APP_KEY || null;
 const API_SECRET = process.env.SECRET_KEY || null;
 
@@ -40,23 +45,24 @@ app.use('/', async function (req, _res, next) {
             path: req.path,
         });
 
-    if (API_KEY == null || API_SECRET == null) {
-        let err = new Error("Missing APP_KEY and/or SECRET_KEY");
-        next(err);
-        return
-    }
-
-    var accessToken = process.env.ACCESS_TOKEN || null;
-    var accessTokenCreatedAt = process.env.ACCESS_TOKEN_CREATED_AT || null;
-
-    logger.info('app.use(\'/\')', 'Retrieved existing ACCESS_TOKEN and ACCESS_TOKEN_CREATED_AT.',
-        { accessToken: accessToken, accessTokenCreatedAt: accessTokenCreatedAt });
-
-    // Check if access token has expired (older than 14 days)
-    var two_weeks_ago_utc_ms = Math.floor(new Date().getTime() - 12096e5);
-    var accessTokenExpired = (accessTokenCreatedAt !== null) ? two_weeks_ago_utc_ms >= accessTokenCreatedAt : true;
-
     try {
+        if (API_KEY == null || API_SECRET == null) {
+            let err = new Error("Missing APP_KEY and/or SECRET_KEY");
+            next(err);
+            return
+        }
+
+        var accessToken = process.env.ACCESS_TOKEN || null;
+        var accessTokenCreatedAt = process.env.ACCESS_TOKEN_CREATED_AT || null;
+
+        logger.info('app.use(\'/\')', 'Retrieved existing ACCESS_TOKEN and ACCESS_TOKEN_CREATED_AT.',
+            { accessToken: accessToken, accessTokenCreatedAt: accessTokenCreatedAt });
+
+        // Check if access token has expired (older than 14 days)
+        var two_weeks_ago_utc_ms = Math.floor(new Date().getTime() - 12096e5);
+        var accessTokenExpired = (accessTokenCreatedAt !== null) ? two_weeks_ago_utc_ms >= accessTokenCreatedAt : true;
+
+
         // Create access token if invalid
         if (accessToken == null || accessTokenExpired) {
             logger.info('app.use(\'/\')', 'Refreshing access token.');
@@ -91,15 +97,15 @@ app.use('/', async function (req, _res, next) {
 * Returns a success message and list of all Yotpo reviews from associated account
 */
 app.get('/', async function (_req, res, next) {
-    try {        
+    try {
         const accessToken = process.env.ACCESS_TOKEN || null;
-        
+
         logger.info('/', 'Fetching all reviews.', { apiKeyIsNull: API_KEY == null, accessTokenIsNull: accessToken == null });
-        
+
         const allReviews = await yotpoClient.fetchAllReviews(API_KEY, accessToken);
-        
+
         logger.info('/', 'Successfully fetched all reviews.');
-        
+
         res.status(200).render('allReviews', { allReviews });
     } catch (e) {
         next(e);
@@ -174,8 +180,8 @@ app.get('/reviewer-profile/:selectedReviewId', profileViewCache(60), async funct
 
         logger.info('/reviewer-profile/:selectedReviewId', 'Fetching reviewer profile.', { selectedReviewId: selectedReviewId });
 
-        if (selectedReviewId == null) {
-            throw new Error(`Must provide selectedReviewId. (selectedReviewId: ${selectedReviewId})`);
+        if (selectedReviewId == null || selectedReviewId == 0) {
+            throw new Error(`Must provide valid selectedReviewId. (selectedReviewId: ${selectedReviewId})`);
         }
 
         logger.info('/reviewer-profile/:selectedReviewId', 'Calling Yotpo Client to fetch review profile.');
@@ -191,7 +197,7 @@ app.get('/reviewer-profile/:selectedReviewId', profileViewCache(60), async funct
 });
 
 /*
-* Returns error responses
+* Returns error response
 */
 app.use(function (err, _req, res, _next) {
     logger.error("error-middleware", err);

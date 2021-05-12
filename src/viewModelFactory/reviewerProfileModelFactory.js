@@ -2,7 +2,7 @@ const logger = require('npmlog');
 const yotpoClient = require('../yotpoClient');
 /* 
 * Takes review id and fetches all reviews posted by the same author. 
-* Returns a profile object. 
+* Returns a profile object that is formatted for the reviewerProfile view.
 *  {
 *       authorImageUrl: selectedAuthorImageUrl,
 *       authorName: selectedAuthorName,

@@ -19,6 +19,10 @@ var libs = [
   }
 ];
 
+/*
+* Injects required libraries sequentially
+* based on dependency tree hierarchy
+*/
 (function injectLibsFromStack() {
   if (libs.length === 0) {
     return;
@@ -41,7 +45,12 @@ var libs = [
   }
 })();
 
-function attachProfileLinksToReviewHeader() {
+/*
+* Extracts the review id from each Yotpo review div
+* and attaches a click action that fetches and displays
+* the relevant profile
+*/
+function attachProfileLinksToAllReviews() {
   const profileOverlayDiv = $("#reviewer-profile-overlay-view");
   const profileOverlayChildDiv = profileOverlayDiv.find("#reviewer-profile-overlay-view-child");
 
@@ -68,7 +77,7 @@ function attachProfileLinksToReviewHeader() {
         },
         error: function (_xhr, _ajaxOptions, _thrownError) {
           profileOverlayChildDiv.empty();
-          profileOverlayChildDiv.append("<h1> Something went wrong... </h1>");
+          profileOverlayChildDiv.append("<h1> We couldn't find this reviewer's profile... </h1>");
         }
       });
     });
@@ -76,6 +85,10 @@ function attachProfileLinksToReviewHeader() {
   });
 }
 
+/* 
+* Sets up a listener to changes to the Yotpo widget
+* such as new reviews added, page changes, etc.
+*/
 var subtreeModifiedTimer = false;
 function bindYotpoWidgetListener() {
   $('div.yotpo-nav-content').bind('DOMSubtreeModified', function (_event) {
@@ -84,7 +97,7 @@ function bindYotpoWidgetListener() {
     }
 
     subtreeModifiedTimer = true;
-    setTimeout(attachProfileLinksToReviewHeader, 500);
+    setTimeout(attachProfileLinksToAllReviews, 500);
 
     setTimeout(function () {
       subtreeModifiedTimer = false;
@@ -92,17 +105,26 @@ function bindYotpoWidgetListener() {
   });
 }
 
+/*
+* Checks that required dependencies exists 
+* and adds retries for calling attachProfileLinksToAllReviews()
+* and bindYotpoWidgetListener()
+*/
 function setUp(attempt=0) {
   if (attempt > 5) {
     return;
   } else if (window.jQuery) {
-    attachProfileLinksToReviewHeader();
+    attachProfileLinksToAllReviews();
     bindYotpoWidgetListener();
   } else {
     setTimeout(() => setUp(++attempt), 500);
   }
 }
 
+/*
+* Checks to see if page DOM has loaded
+* before executing function e
+*/
 function ready(e) {
   if ("interactive" !== document.readyState) {
     if ("complete" === document.readyState) {
