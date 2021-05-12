@@ -50,8 +50,26 @@ export async function getReviewerProfileForReviewId(selectedReviewId, apiKey, ac
             const createdAt = currReview["created_at"];
             const createdAtMs = createdAt ? Date.parse(createdAt) : null;
             const createdAtReadableString = createdAtMs ? new Date(createdAtMs).mmddyyyy() : "";
-            const title = currReview["title"];
-            const content = currReview["content"];
+
+
+            function removeHtmlEntities(str) {
+                if (typeof str !== "string") {
+                    return str; 
+                }
+                var text = str;
+                const entities = {
+                    '\'': /&#x27;/g,
+                    '\"': /&quot;/g,
+                    '&': /&amp;/g
+                };
+                for (const [key, value] of Object.entries(entities)) {
+                    text = text.replace(value, key);
+                }
+                return text;
+            }
+
+            const title = removeHtmlEntities(currReview["title"]);
+            const content = removeHtmlEntities(currReview["content"]);
 
             const deletedStatus = currReview["deleted"];
             const archiveStatus = currReview["archive"];
@@ -93,7 +111,7 @@ export async function getReviewerProfileForReviewId(selectedReviewId, apiKey, ac
             allUpvotesCount += upvoteCount;
 
             logger.info('getReviewerProfileForReviewId', 'Adding item to relevant reviews.');
-
+            logger.warn('getReviewerProfileForReviewId', 'text content', { title, content });
             relevantReviews.push({
                 title: title,
                 content: content,
