@@ -63,7 +63,7 @@ export async function fetchAllReviews(
     while (nextPageAvailable) {
         page++;
 
-        const url = yotpoHelpers.constructRetrieveAllReviewsUrl(apiKey, accessToken, { page: page });
+        const url = yotpoHelpers.constructRetrieveAllReviewsUrl(apiKey, accessToken, { page: page, count: resultsPerPageCount });
         const res = await axios.get(url);
         logger.info('fetchAllReviews', 'Received response.', { page: page });
 
