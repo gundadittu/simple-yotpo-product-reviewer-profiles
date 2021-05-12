@@ -126,7 +126,7 @@ export async function constructReviewProfileViewModel(selectedReviewId, apiKey, 
     }
 
     const relevantReviewsCount = relevantReviews.length;
-    const avgStarRating = (relevantReviewsCount > 0) ? allStarRatingsCount / relevantReviewsCount : 0;
+    const avgStarRating = (relevantReviewsCount > 0) ? (allStarRatingsCount / relevantReviewsCount).toFixed(1) : 0;
 
     const profile = {
         authorImageUrl: selectedAuthorImageUrl,
