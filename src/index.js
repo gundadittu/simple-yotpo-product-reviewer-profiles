@@ -24,8 +24,8 @@ app.engine('ejs', require('ejs').__express);
 
 app.use(cors());
 
-const API_KEY = process.env.APP_KEY;
-const API_SECRET = process.env.SECRET_KEY;
+const API_KEY = process.env.APP_KEY || null;
+const API_SECRET = process.env.SECRET_KEY || null;
 
 /*
 * Confirms that application is properly configured to handle incoming request.
@@ -46,15 +46,16 @@ app.use('/', async function (req, _res, next) {
         return
     }
 
-    var accessToken = process.env.ACCESS_TOKEN;
-    var accessTokenCreatedAt = process.env.ACCESS_TOKEN_CREATED_AT;
+    var accessToken = process.env.ACCESS_TOKEN || null;
+    var accessTokenCreatedAt = process.env.ACCESS_TOKEN_CREATED_AT || null;
 
     logger.info('app.use(\'/\')', 'Retrieved existing ACCESS_TOKEN and ACCESS_TOKEN_CREATED_AT.',
         { accessToken: accessToken, accessTokenCreatedAt: accessTokenCreatedAt });
 
     // Check if access token has expired (older than 14 days)
-    var two_weeks_ago_utc_ms = Math.floor(new Date(new Date().getTime() - (14 * 24 * 60 * 60 * 1000)).getTime() / 100);
-    var accessTokenExpired = accessTokenCreatedAt ? two_weeks_ago_utc_ms >= accessTokenCreatedAt : true;
+    var two_weeks_ago_utc_ms = Math.floor(new Date().getTime() - 12096e5);
+    var accessTokenExpired = (accessTokenCreatedAt !== null) ? two_weeks_ago_utc_ms >= accessTokenCreatedAt : true;
+
     try {
         // Create access token if invalid
         if (accessToken == null || accessTokenExpired) {
@@ -69,7 +70,7 @@ app.use('/', async function (req, _res, next) {
             child_process.exec(cmd);
 
             // Use Heroku CLI to save time when access token was created as env variable
-            accessTokenCreatedAt = Math.floor(new Date().getTime() / 1000);
+            accessTokenCreatedAt = Math.floor(new Date().getTime());
             const cmd2 = "heroku config:set ACCESS_TOKEN_CREATED_AT=" + accessTokenCreatedAt;
             child_process.exec(cmd2);
 
